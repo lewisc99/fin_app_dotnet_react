@@ -1,23 +1,24 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
 using Domain.ValueObjects;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
     public class PaymentRepository : IPaymentRepository
     {
-        private readonly Appd
-        public Task AddAsync(Payment payment, CancellationToken cancellationToken = default)
+        private readonly AppDbContext _context;
+        public async Task AddAsync(Payment payment, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            await _context.Payments.AddAsync(payment, cancellationToken);
         }
 
-        public Task<Payment?> GetByIdAsync(PaymentId id, CancellationToken cancellationToken = default)
+        public async Task<Payment?> GetByIdAsync(PaymentId id, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await _context.Payments
+                .Include(p => p.Tags)
+                .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
         }
     }
 }
