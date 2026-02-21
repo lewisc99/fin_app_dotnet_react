@@ -1,5 +1,6 @@
 ﻿using Domain.Common;
 using Domain.Enums;
+using Domain.Events;
 using Domain.Exceptions;
 using Domain.ValueObjects;
 
@@ -37,7 +38,10 @@ public class Payment : BaseEntity<PaymentId>
 
     public void AddTag(Tag tag)
     {
-        if (!_tags.Any(t => t.TagId == tag.Id))
-            _tags.Add(new PaymentTag(this.Id, tag.Id));
+        if (_tags.Any(t => t.TagId == tag.Id)) return;
+
+        var paymentTag = new PaymentTag(this.Id, tag.Id);
+
+        _tags.Add(paymentTag);
     }
 }
